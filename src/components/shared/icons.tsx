@@ -6,6 +6,7 @@ import {
   VideoIcon,
   Crop,
   Check,
+  Menu,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -85,4 +86,5 @@ export const Icons = {
       <path d="M9 18c-4.51 2-5-2-7-2" />
     </svg>
   ),
+  menu: Menu,
 };

@@ -32,7 +32,7 @@ const Hero = () => {
             className="shadow-md h-12 rounded-full px-8"
             size={"lg"}
           >
-            <Link href="https://docs.openvideo.dev/" className="font-normal">
+            <Link href="/projects" className="font-normal text-lg">
               Get Started
             </Link>
           </Button>

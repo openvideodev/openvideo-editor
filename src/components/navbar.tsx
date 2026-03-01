@@ -35,10 +35,10 @@ const Navbar = () => {
             Home
           </a>
           <a
-            onClick={() => handleGetStarted("/marketplace")}
+            onClick={() => handleGetStarted("/workflows")}
             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
           >
-            Marketplace
+            Workflows
           </a>
         </div>
 

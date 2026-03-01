@@ -12,6 +12,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 
   const navLinks = [
     { name: "Docs", href: "https://docs.openvideo.dev" },
+    { name: "Workflows", href: "/workflows" },
     { name: "Discord", href: "https://discord.gg/SCfMrQx8kr" },
     { name: "Github", href: "https://github.com/openvideodev/openvideo-editor" },
   ];
@@ -55,8 +56,8 @@ export default function Layout({ children }: { children: ReactNode }) {
             {/* Right: CTA */}
             <div className="flex justify-end">
               <Button asChild size="sm" className="rounded-full">
-                <Link href="https://editor.openvideo.dev/">
-                  Try editor
+                <Link href="/projects">
+                  Get started
                 </Link>
               </Button>
             </div>
@@ -97,8 +98,8 @@ export default function Layout({ children }: { children: ReactNode }) {
             ))}
             <div className="pt-4 border-t w-full px-10">
               <Button asChild className="w-full">
-                <Link href="https://editor.openvideo.dev/" onClick={() => setIsMenuOpen(false)}>
-                  Try editor
+                <Link href="/projects" onClick={() => setIsMenuOpen(false)}>
+                  Get started
                 </Link>
               </Button>
             </div>
