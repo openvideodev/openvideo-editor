@@ -1,6 +1,9 @@
+"use client";
 import React from "react";
-import { Brush, Star, Code, Wand, Rocket, Zap, Layers, Sparkles } from "lucide-react";
+import { Sparkles, Wand2, ArrowRightLeft, Move } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Icons } from "@/components/shared/icons";
+import { IconSparkles2 } from "@tabler/icons-react";
 
 const FeatureCard = ({
   title,
@@ -23,37 +26,35 @@ const FeatureCard = ({
 const Features = () => {
   const features = [
     {
-      title: "Zero Infrastructure",
-      description: "Shift complex video rendering to the client. Modern WebCodecs remove the need for massive server-side rendering farms.",
-      icon: <Zap size={18} />,
+      title: "AI Editor Copilot",
+      description: "Write commands to edit video, generate transitions or analyze your media in real time.",
+      icon: <IconSparkles2 size={18} />,
     },
     {
-      title: "Seamless Cloud Sync",
-      description:
-        "Serialized JSON project states allow for infinite portability. Sync between local editors and headless cloud workflows instantly.",
-      icon: <Code size={18} />,
+      title: "Zero Latency Renderer",
+      description: "Fast, client-side rendering using WebCodecs and PixiJS for a smooth editing experience.",
+      icon: <Icons.video size={18} />,
     },
     {
-      title: "Infinite Customization",
-      description: "Extensible plugin-based architecture. Build custom effects, transitions, and export handlers to fit your unique needs.",
-      icon: <Layers size={18} />,
-    },
-    {
-      title: "Platform Agnostic",
-      description: "Built for every stack. Embed OpenVideo into React, Vue, Svelte, or vanilla JS applications with minimal effort.",
+      title: "Chroma Key",
+      description: "Professional background removal for any video with just one click.",
       icon: <Sparkles size={18} />,
     },
     {
-      title: "Lag-Free Previews",
-      description: "Engineered for real-time feedback. Hardware-accelerated previews ensure a smooth editing experience regardless of project complexity.",
-      icon: <Rocket size={18} />,
+      title: "Pro Effects",
+      description: "Apply cinematic filters and custom GLSL effects to your creative projects.",
+      icon: <Wand2 size={18} />,
     },
     {
-      title: "Open Architecture",
-      description:
-        "Fully transparent and community-driven. Built by developers, for developers, with a focus on modularity and extensibility.",
-      icon: <Star size={18} />,
+      title: "Smooth Transitions",
+      description: "Seamlessly blend clips with a variety of professional-grade transitions.",
+      icon: <ArrowRightLeft size={18} />,
     },
+    {
+      title: "Fluid Animations",
+      description: "Bring elements to life with customizable keyframe-based motion and transforms.",
+      icon: <Move size={18} />,
+    }
   ];
 
   return (
@@ -64,9 +65,9 @@ const Features = () => {
           <Badge variant="secondary" className="px-4 py-2">
             Features
           </Badge>{" "}
-          <h2 className="text-4xl font-medium">Why use OpenVideo?</h2>
-          <p className="max-w-2xl mx-auto max-sm:text-sm text-muted-foreground">
-            A powerful, flexible, and high-performance video rendering engine for building modern creative tools.
+          <h2 className="text-4xl font-medium tracking-tight">Everything you need to edit at phase</h2>
+          <p className="max-w-2xl mx-auto max-sm:text-sm text-muted-foreground text-lg">
+            Powerful AI-assisted tools, real-time rendering and professional video workflows — all running directly in your browser.
           </p>
         </div>{" "}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
@@ -85,6 +86,9 @@ const Features = () => {
                 <div className="absolute bottom-0 left-4 right-4 h-[1.5px] bg-linear-to-r from-transparent via-border to-transparent hidden sm:block lg:hidden" />
               )}
               {index < 3 && (
+                <div className="absolute bottom-0 left-4 right-4 h-[1.5px] bg-linear-to-r from-transparent via-border to-transparent hidden lg:block" />
+              )}
+              {index >= 3 && index < 6 && (
                 <div className="absolute bottom-0 left-4 right-4 h-[1.5px] bg-linear-to-r from-transparent via-border to-transparent hidden lg:block" />
               )}
               {/* Faded right border */}
