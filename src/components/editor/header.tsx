@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 import { IconShare } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { useStudioStore } from "@/stores/studio-store";
@@ -20,6 +21,9 @@ import {
   Settings,
   Database,
   FilePlus,
+  Square,
+  Smartphone,
+  Monitor,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Compositor } from "openvideo";
@@ -41,7 +45,19 @@ export default function Header() {
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isBatchExporting, setIsBatchExporting] = useState(false);
+  const [customWidth, setCustomWidth] = useState("");
+  const [customHeight, setCustomHeight] = useState("");
   const router = useRouter();
+
+  const handleApplyCustomSize = () => {
+    const w = parseInt(customWidth);
+    const h = parseInt(customHeight);
+    if (!isNaN(w) && !isNaN(h) && w > 0 && h > 0) {
+      setCanvasSize({ width: w, height: h }, "Custom");
+    } else {
+      toast.error("Invalid dimensions");
+    }
+  };
 
   const handleGetStarted = (route: string) => {
     router.push(route);
@@ -307,6 +323,101 @@ export default function Header() {
           </DropdownMenuContent>
         </DropdownMenu>
 
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 ">
+              Resize
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-56 p-3">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <p className="text-xs font-medium text-muted-foreground px-1 uppercase tracking-wider">
+                  Presets
+                </p>
+                <div className="grid grid-cols-1 gap-1">
+                  {[
+                    { label: "Square", icon: Square, width: 1080, height: 1080 },
+                    { label: "Portrait", icon: Smartphone, width: 1080, height: 1920 },
+                    { label: "Landscape", icon: Monitor, width: 1920, height: 1080 },
+                  ].map((preset) => {
+                    const isSelected = aspectRatio === preset.label;
+                    const Icon = preset.icon;
+                    return (
+                      <DropdownMenuItem
+                        key={preset.label}
+                        onClick={() =>
+                          setCanvasSize(
+                            { width: preset.width, height: preset.height },
+                            preset.label,
+                          )
+                        }
+                        className="text-xs justify-between cursor-pointer px-2 py-1.5"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Icon className="h-3.5 w-3.5 text-muted-foreground" />
+                          <span>{preset.label}</span>
+                        </div>
+                        <div
+                          className={cn(
+                            "flex h-3.5 w-3.5 items-center justify-center rounded-full border border-muted-foreground/50",
+                            isSelected && "border-primary"
+                          )}
+                        >
+                          {isSelected && (
+                            <div className="h-2 w-2 rounded-full bg-primary" />
+                          )}
+                        </div>
+                      </DropdownMenuItem>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="h-px bg-border/50 mx-1" />
+
+              <div className="space-y-3">
+                <p className="text-xs font-medium text-muted-foreground px-1 uppercase tracking-wider">
+                  Custom
+                </p>
+                <div className="grid grid-cols-2 gap-2 px-1">
+                  <div className="space-y-1">
+                    <label className="text-[10px] text-muted-foreground uppercase">
+                      Width
+                    </label>
+                    <input
+                      type="number"
+                      value={customWidth}
+                      onChange={(e) => setCustomWidth(e.target.value)}
+                      placeholder="1920"
+                      className="w-full bg-muted/50 border border-border rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary h-7"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] text-muted-foreground uppercase">
+                      Height
+                    </label>
+                    <input
+                      type="number"
+                      value={customHeight}
+                      onChange={(e) => setCustomHeight(e.target.value)}
+                      placeholder="1080"
+                      className="w-full bg-muted/50 border border-border rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary h-7"
+                    />
+                  </div>
+                </div>
+                <Button
+                  onClick={handleApplyCustomSize}
+                  className="w-full h-8 text-xs font-medium mt-1"
+                  size="sm"
+                >
+                  Apply
+                </Button>
+              </div>
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
         <div className=" pointer-events-auto flex h-10 items-center px-1.5">
           <Button
             onClick={() => studio?.undo()}
@@ -372,43 +483,7 @@ export default function Header() {
           </Button>
         </Link>
 
-        {studio && (
-          <div className="flex items-center gap-1 border-x border-border/50 px-2 h-7 mx-1">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-7 px-2 text-xs font-semibold"
-                >
-                  <Icons.crop className="mr-1.5 h-3.5 w-3.5 text-muted-foreground" />
-                  {aspectRatio}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-32">
-                {DEFAULT_CANVAS_PRESETS.map((preset) => (
-                  <DropdownMenuItem
-                    key={preset.name}
-                    onClick={() =>
-                      setCanvasSize(
-                        { width: preset.width, height: preset.height },
-                        preset.name,
-                      )
-                    }
-                    className="text-xs"
-                  >
-                    <div className="flex items-center justify-between w-full">
-                      <span>{preset.name}</span>
-                      {aspectRatio === preset.name && (
-                        <Icons.check className="h-3 w-3" />
-                      )}
-                    </div>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        )}
+        {/* End of right actions */}
 
         <ExportModal
           open={isExportModalOpen}
@@ -420,14 +495,7 @@ export default function Header() {
         />
 
         <ModeToggle />
-        <Button
-          className="flex h-7 gap-1 border border-border"
-          variant="outline"
-          size={"sm"}
-        >
-          <IconShare width={18} />{" "}
-          <span className="hidden md:block">Share</span>
-        </Button>
+
         <Button
           size="sm"
           className="gap-2 rounded-full"

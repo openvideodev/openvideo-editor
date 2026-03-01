@@ -19,7 +19,7 @@ const STUDIO_CONFIG = {
 } as const;
 
 const THEME_COLORS = {
-  dark: "#181818",
+  dark: "#1C160D",
   light: "#ffffff",
 } as const;
 
