@@ -18,7 +18,7 @@ import {
   MICROSECONDS_PER_SECOND,
   type TrackType,
 } from "@/types/timeline";
-import { useTimelineStore } from "@/stores/timeline-store";
+
 import EventEmitter from "./event-emitter";
 import * as SelectionHandlers from "./handlers/selection";
 import * as DragHandlers from "./handlers/drag-handler";
@@ -82,6 +82,8 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
   #mouseWheelHandler?: (e: TPointerEventInfo<WheelEvent>) => void;
   #inputController!: PointerHandler;
   #totalTracksHeight: number = 0;
+  /** Framework-agnostic callback for project total duration in seconds. */
+  #getDuration: () => number;
 
   // Cache for Fabric objects
   #trackObjects: Map<string, Track> = new Map();
@@ -106,8 +108,9 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
   #onMouseMove: (opt: any) => void;
   #enableGuideRedraw: boolean = true;
 
-  constructor(id: string) {
+  constructor(id: string, options: { getDuration?: () => number } = {}) {
     super();
+    this.#getDuration = options.getDuration ?? (() => 0);
     this.containerEl = document.getElementById(id) as HTMLDivElement;
 
     if (!this.containerEl) {
@@ -190,7 +193,7 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
   }
 
   // ──────────────────────────────────────────────────────────────────────────
-  // Public accessors used by CanvasInputController
+  // Public accessors used by PointerHandler
   // ──────────────────────────────────────────────────────────────────────────
 
   /** Current horizontal scroll offset in pixels. */
@@ -205,12 +208,20 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
 
   /**
    * Optional override installed by the Scrollbar subsystem.
-   * CanvasInputController checks this so it can delegate wheel events.
+   * PointerHandler checks this so it can delegate wheel events.
    */
   get mouseWheelHandler():
     | ((e: TPointerEventInfo<WheelEvent>) => void)
     | undefined {
     return this.#mouseWheelHandler;
+  }
+
+  /**
+   * Total project duration in seconds, sourced via the getDuration callback
+   * provided at construction. Zero if no callback was provided.
+   */
+  get totalDuration(): number {
+    return this.#getDuration();
   }
 
   private handleMouseMove(opt: any) {
@@ -480,10 +491,12 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
     return null;
   }
 
-  public setTracks(tracks: ITimelineTrack[]) {
+  public setTracks(
+    tracks: ITimelineTrack[],
+    clips: Record<string, IClip>,
+  ) {
     this.#tracks = tracks;
-    const storeState = useTimelineStore.getState();
-    this.#clipsMap = storeState.clips;
+    this.#clipsMap = clips;
     this.render();
   }
 

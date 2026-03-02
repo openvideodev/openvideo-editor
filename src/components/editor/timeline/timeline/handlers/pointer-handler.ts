@@ -1,5 +1,4 @@
 import { TIMELINE_CONSTANTS } from "@/components/editor/timeline/timeline-constants";
-import { useTimelineStore } from "@/stores/timeline-store";
 import type { TPointerEventInfo } from "fabric";
 import type Timeline from "../canvas";
 
@@ -160,7 +159,7 @@ export class PointerHandler {
     if (deltaX === 0 && deltaY === 0) return;
 
     const pixelsPerSecond = TIMELINE_CONSTANTS.PIXELS_PER_SECOND;
-    const projectDuration = useTimelineStore.getState().getTotalDuration();
+    const projectDuration = timeline.totalDuration;
     const durationPx = projectDuration * pixelsPerSecond * timeline.timeScale;
     const maxScrollX = Math.max(0, durationPx - canvas.width);
     const maxScrollY = Math.max(
