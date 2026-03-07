@@ -44,6 +44,22 @@ const CaptionPresetPicker = () => {
       preset.fontUrl =
         "https://fonts.gstatic.com/s/bangers/v13/FeVQS0BTqb0h60ACL5la2bxii28.ttf";
     }
+    if (preset.boxShadow === undefined) {
+      preset.boxShadow = { color: "transparent", x: 0, y: 0, blur: 0 };
+    }
+    if (preset.textTransform === undefined) {
+      preset.textTransform = "none";
+    }
+    if (preset.textAlign === undefined) {
+      preset.textAlign = "center";
+    }
+    if (preset.isKeywordColor === undefined) {
+      preset.isKeywordColor = "transparent";
+    }
+
+    if (preset.preservedColorKeyWord === undefined) {
+      preset.preservedColorKeyWord = false;
+    }
 
     // Load fonts if needed
     if (preset.fontFamily && preset.fontUrl) {

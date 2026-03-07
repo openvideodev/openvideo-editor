@@ -21,7 +21,6 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 5,
     fontFamily: "Bangers-Regular",
-    isKeywordColor: "#000000",
     fontUrl:
       "https://fonts.gstatic.com/s/bangers/v13/FeVQS0BTqb0h60ACL5la2bxii28.ttf",
     previewUrl:
@@ -93,10 +92,10 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
       "https://cdn.designcombo.dev/caption_previews/dynamic-preset18.webm",
   },
   {
-    appearedColor: "#EE1212",
-    activeColor: "#EE1212",
+    appearedColor: "#ffffff",
+    activeColor: "#ffffff",
     activeFillColor: "transparent",
-    color: "#EE1212",
+    color: "#ffffff",
     backgroundColor: "transparent",
     borderColor: "#000000",
     borderWidth: 10,
