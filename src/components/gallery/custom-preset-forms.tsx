@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { ShikiEditor } from "@/components/ui/shiki-editor";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -75,13 +76,15 @@ export const CustomShaderForm = ({
       </div>
       <div className="space-y-2">
         <Label>GLSL {type === "Effect" ? "Fragment" : "Transition"} Code</Label>
-        <Textarea
+        <ShikiEditor
           value={fragment}
-          onChange={(e) => setFragment(e.target.value)}
+          onChange={setFragment}
+          language="glsl"
+          theme="vitesse-dark"
           placeholder={
             type === "Effect" ? "void main() { ... }" : "vec4 transition(vec2 p) { ... }"
           }
-          className="font-mono h-64 text-xs"
+          className="h-64"
         />
         <Button
           variant="ghost"
