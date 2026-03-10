@@ -4,12 +4,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useStudioStore } from "@/stores/studio-store";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2 } from "lucide-react";
+import { formatFilterName } from "@/utils/effects";
 
 const EFFECT_DURATION_DEFAULT = 5000000;
-
-const formatFilterName = (name: string) => {
-  return name.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase());
-};
 
 const gridClasses = `
   grid

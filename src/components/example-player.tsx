@@ -94,39 +94,38 @@ export function ExamplePlayer({ project, onLoad, onReady }: ExamplePlayerProps) 
   };
 
   return (
-    <div className="flex flex-col  w-full max-w-xs mx-auto overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-      <div className="aspect-[9/16] w-full bg-black/5 relative overflow-hidden">
-        <canvas ref={canvasRef} className="w-full h-full block" />
+    <div className="w-full h-full flex flex-col justify-between">
+      <div className="flex-1 flex justify-center items-center">
+        <div className="flex flex-col  w-full max-w-sm mx-auto overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+          <div className="aspect-[9/16] w-full bg-black/5 relative overflow-hidden">
+            <canvas ref={canvasRef} className="w-full h-full block" />
+          </div>
+        </div>
       </div>
 
-      <div className="px-6 py-4 flex flex-col gap-3 bg-muted/30 border-t border-border">
-        {/* Seek Bar */}
+      <div className="px-6 py-4 flex gap-3 bg-muted/30 border border-border items-center m-6 mt-0">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={togglePlay}
+          className="h-10 w-10 text-foreground hover:bg-background"
+        >
+          {isPlaying ? (
+            <Pause className="h-5 w-5 fill-current" />
+          ) : (
+            <Play className="h-5 w-5 fill-current" />
+          )}
+        </Button>
         <input
           type="range"
           min={0}
           max={duration}
           value={currentTime}
           onChange={handleSeek}
-          className="w-full h-1.5 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary mt-2"
+          className="flex-1 h-1.5 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
         />
-
-        <div className="flex items-center justify-between">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={togglePlay}
-            className="h-10 w-10 text-foreground hover:bg-background"
-          >
-            {isPlaying ? (
-              <Pause className="h-5 w-5 fill-current" />
-            ) : (
-              <Play className="h-5 w-5 fill-current" />
-            )}
-          </Button>
-
-          <div className="text-xs font-mono text-muted-foreground select-none">
-            {formatTime(currentTime)} / {formatTime(duration)}
-          </div>
+        <div className="text-xs font-mono text-muted-foreground select-none">
+          {formatTime(currentTime)} / {formatTime(duration)}
         </div>
       </div>
     </div>

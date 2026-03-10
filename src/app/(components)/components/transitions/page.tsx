@@ -222,12 +222,9 @@ const TransitionsPage = () => {
       </div>
 
       {/* ── Right panel: Preview ────────────────────────────────── */}
-      <div className="flex-1 flex flex-col items-center justify-center bg-muted/30 p-6 overflow-hidden">
-        <div className="w-full max-w-md">
-          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3 text-center">
-            Preview
-          </p>
-          <div className="relative rounded-xl overflow-hidden bg-black shadow-xl">
+      <div className="flex-1 flex flex-col items-center justify-center overflow-hidden">
+        <div className="w-full h-full flex flex-col items-center justify-center">
+          <div className="relative w-full h-full flex items-center justify-center">
             <ExamplePlayer
               project={project}
               onLoad={() => setLoading(false)}
@@ -239,19 +236,19 @@ const TransitionsPage = () => {
               <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs">
                 <div className="flex flex-col items-center gap-3">
                   <div className="w-7 h-7 border-[3px] border-primary border-t-transparent rounded-full animate-spin" />
-                  <p className="text-xs font-medium text-white/80">Loading…</p>
+                  <p className="text-xs font-medium text-muted-foreground">Loading…</p>
                 </div>
               </div>
             )}
           </div>
-          {selectedPreset && (
+          {/* {selectedPreset && (
             <p className="text-center text-xs text-muted-foreground mt-3">
               Previewing:{" "}
               <span className="text-foreground font-medium">
                 {transitions.find((t) => t.key === selectedPreset)?.label}
               </span>
             </p>
-          )}
+          )} */}
         </div>
       </div>
     </div>
