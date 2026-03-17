@@ -31,7 +31,7 @@ export function CanvasPanel({ onReady }: CanvasPanelProps) {
   const studioRef = useRef<Studio | null>(null);
   const onReadyRef = useRef(onReady);
   const { setStudio } = useStudioStore();
-  const { canvasSize } = useProjectStore();
+  const { canvasSize, initialStudioJSON } = useProjectStore();
   const { theme, resolvedTheme } = useTheme();
 
   const bgColor = useMemo(() => {
@@ -86,14 +86,6 @@ export function CanvasPanel({ onReady }: CanvasPanelProps) {
         ]);
 
         // If there's initial data from the project store, load it now
-        const projectStore = useProjectStore.getState();
-        const initialJSON = projectStore.initialStudioJSON;
-        if (initialJSON) {
-          // Clear it immediately to "consume" it and avoid double-loading (especially in Strict Mode)
-          projectStore.setInitialStudioJSON(null);
-          console.log("Loading initial studio JSON", initialJSON);
-          await studioRef.current.loadFromJSON(initialJSON);
-        }
 
         onReadyRef.current?.();
       } catch (error) {
@@ -146,6 +138,15 @@ export function CanvasPanel({ onReady }: CanvasPanelProps) {
       registerCustomEffect(e.key, e as any);
     });
   }, []);
+
+  useEffect(() => {
+    const projectStore = useProjectStore.getState();
+    if (initialStudioJSON !== null) {
+      projectStore.setInitialStudioJSON(null);
+      console.log("Loading initial studio JSON", initialStudioJSON);
+      studioRef.current?.loadFromJSON(initialStudioJSON);
+    }
+  }, [initialStudioJSON]);
 
   return (
     <div className="h-full w-full flex flex-col min-h-0 min-w-0 bg-card rounded-sm relative">

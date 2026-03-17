@@ -46,6 +46,7 @@ import useLayoutStore from "../store/use-layout-store";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 import { useStudioStore } from "@/stores/studio-store";
+import { NumberInput } from "@/components/ui/number-input";
 
 const GROUPED_FONTS = getGroupedFonts();
 
@@ -55,7 +56,10 @@ interface CaptionPropertiesProps {
 type VerticalAlignMode = "top" | "center" | "bottom";
 
 export function CaptionProperties({ clip }: CaptionPropertiesProps) {
+  const { studio } = useStudioStore();
+  if (!studio) return null;
   const captionClip = clip as any;
+  const allCaptionClips: any[] = studio.clips.filter((c) => c.type === "Caption");
   const opts = captionClip.originalOpts || {};
   const captionColors = opts.caption?.colors || {
     appeared: "#ffffff",
@@ -66,49 +70,48 @@ export function CaptionProperties({ clip }: CaptionPropertiesProps) {
   };
 
   const { setFloatingControl } = useLayoutStore();
-  const { studio } = useStudioStore();
 
-  const handleUpdate = (updates: any) => {
-    // Directly update caption properties
-    Object.keys(updates).forEach((key) => {
-      (captionClip as any)[key] = updates[key];
-    });
+  const handleUpdate = (updates: any, option: "single" | "multiple" = "single") => {
+    if (option === "multiple") {
+      for (const clip of allCaptionClips) {
+        Object.keys(updates).forEach((key) => {
+          (clip as any)[key] = updates[key];
+        });
+        clip.emit("propsChange", {});
+      }
+    } else {
+      Object.keys(updates).forEach((key) => {
+        (captionClip as any)[key] = updates[key];
+      });
+      captionClip.emit("propsChange", {});
+    }
 
-    // Trigger a re-render
-    captionClip.emit("propsChange", updates);
+    studio.emit("propsChange", {});
   };
 
   const handleCaptionColorUpdate = (colorUpdates: any) => {
-    // Directly update the internal opts object
-    if (colorUpdates.appeared !== undefined) {
-      (captionClip as any).opts.appeared = colorUpdates.appeared;
-    }
-    if (colorUpdates.active !== undefined) {
-      (captionClip as any).opts.active = colorUpdates.active;
-    }
-    if (colorUpdates.activeFill !== undefined) {
-      (captionClip as any).opts.activeFill = colorUpdates.activeFill;
-    }
-    if (colorUpdates.background !== undefined) {
-      (captionClip as any).opts.background = colorUpdates.background;
-    }
-    if (colorUpdates.keyword !== undefined) {
-      (captionClip as any).opts.keyword = colorUpdates.keyword;
+    for (const clip of allCaptionClips) {
+      // Directly update the internal opts object
+      if (colorUpdates.appeared !== undefined) {
+        (clip as any).opts.appeared = colorUpdates.appeared;
+      }
+      if (colorUpdates.active !== undefined) {
+        (clip as any).opts.active = colorUpdates.active;
+      }
+      if (colorUpdates.activeFill !== undefined) {
+        (clip as any).opts.activeFill = colorUpdates.activeFill;
+      }
+      if (colorUpdates.background !== undefined) {
+        (clip as any).opts.background = colorUpdates.background;
+      }
+      if (colorUpdates.keyword !== undefined) {
+        (clip as any).opts.keyword = colorUpdates.keyword;
+      }
+      Object.assign((clip as any).caption.colors, colorUpdates);
+      clip.emit("propsChange", {});
     }
 
-    // Also update originalOpts for serialization
-    if (captionClip.originalOpts) {
-      if (!captionClip.originalOpts.caption) {
-        captionClip.originalOpts.caption = {};
-      }
-      if (!captionClip.originalOpts.caption.colors) {
-        captionClip.originalOpts.caption.colors = {};
-      }
-      Object.assign(captionClip.originalOpts.caption.colors, colorUpdates);
-    }
-
-    // Trigger a re-render by emitting a props change event
-    captionClip.emit("propsChange", {});
+    studio.emit("propsChange", {});
   };
 
   const handleAnimationRemove = (id: string) => {
@@ -147,13 +150,13 @@ export function CaptionProperties({ clip }: CaptionPropertiesProps) {
       url: font.url,
     });
 
-    (captionClip as any).opts.fontFamily = font.postScriptName;
-    (captionClip as any).opts.fontUrl = font.url;
-
-    if (captionClip.originalOpts) {
-      captionClip.originalOpts.fontFamily = font.postScriptName;
-      captionClip.originalOpts.fontUrl = font.url;
-    }
+    handleUpdate(
+      {
+        fontFamily: font.postScriptName,
+        fontUrl: font.url,
+      },
+      "multiple",
+    );
 
     captionClip.emit("propsChange", {});
   };
@@ -421,16 +424,11 @@ export function CaptionProperties({ clip }: CaptionPropertiesProps) {
           </Select>
 
           <InputGroup>
-            <InputGroupInput
-              type="number"
+            <NumberInput
               value={opts.fontSize || 40}
               onChange={(e) => {
-                const newSize = parseInt(e.target.value) || 0;
-                (captionClip as any).opts.fontSize = newSize;
-                if (captionClip.originalOpts) {
-                  captionClip.originalOpts.fontSize = newSize;
-                }
-                captionClip.emit("propsChange", {});
+                const newSize = e || 0;
+                handleUpdate({ fontSize: newSize }, "multiple");
               }}
               className="text-sm"
             />
@@ -455,7 +453,7 @@ export function CaptionProperties({ clip }: CaptionPropertiesProps) {
             ].map((item) => (
               <button
                 key={item.value}
-                onClick={() => handleUpdate({ textCase: item.value })}
+                onClick={() => handleUpdate({ textCase: item.value }, "multiple")}
                 className={cn(
                   "flex-1 text-[10px] font-medium flex items-center justify-center rounded-sm py-1 transition-colors",
                   (captionClip.textCase || "none") === item.value
@@ -485,7 +483,7 @@ export function CaptionProperties({ clip }: CaptionPropertiesProps) {
                   <ColorPicker
                     onChange={(colorValue) => {
                       const hexColor = color.rgb(colorValue).hex();
-                      handleUpdate({ fill: hexColor });
+                      handleUpdate({ fill: hexColor }, "multiple");
                     }}
                     className="w-72 h-72 rounded-md border bg-background p-4 shadow-sm"
                   >
@@ -506,7 +504,7 @@ export function CaptionProperties({ clip }: CaptionPropertiesProps) {
             </InputGroupAddon>
             <InputGroupInput
               value={opts.fill?.toUpperCase() || "#FFFFFF"}
-              onChange={(e) => handleUpdate({ fill: e.target.value })}
+              onChange={(e) => handleUpdate({ fill: e.target.value }, "multiple")}
               className="text-sm p-0 text-[10px] font-mono"
             />
           </InputGroup>

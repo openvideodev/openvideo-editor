@@ -88,7 +88,7 @@ export async function generateCaptionClips(options: CaptionClipOptions): Promise
     const durationUs = chunkDurationMs * 1000;
 
     // Use actual measured dimensions from chunk, with padding
-    const captionWidth = Math.ceil(chunk.width) + (mode === "single" ? 60 : 100);
+    const captionWidth = Math.ceil(chunk.width) + (mode === "single" ? 60 : 0);
     const captionHeight = Math.ceil(chunk.height) + 20;
 
     clips.push({

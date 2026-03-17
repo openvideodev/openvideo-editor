@@ -194,6 +194,7 @@ export default function Header() {
     try {
       const studioJSON = studio.exportToJSON();
       await storageService.saveProjectFull(projectId, studioJSON);
+      console.log("Project saved", studioJSON);
       if (showToast) {
         toast.success("Project saved", { id: toastId });
       }
@@ -216,13 +217,30 @@ export default function Header() {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
         handleSave(false); // Silent save
-      }, 2000); // 2 second debounce
+      }, 1000); // 1 second debounce
     };
+    const eventsToListen = [
+      "history:changed",
+      "clip:added",
+      "clip:removed",
+      "clip:updated",
+      "clip:moved",
+      "track:added",
+      "track:removed",
+      "clips:removed",
+      "clip:replaced",
+      "clip:propsChange",
+      "propsChange",
+    ];
 
-    studio.on("history:changed", onStudioChange);
+    eventsToListen.forEach((event) => {
+      studio.on(event, onStudioChange);
+    });
 
     return () => {
-      studio.off("history:changed", onStudioChange);
+      eventsToListen.forEach((event) => {
+        studio.off(event, onStudioChange);
+      });
       clearTimeout(timeoutId);
     };
   }, [studio, projectId]);

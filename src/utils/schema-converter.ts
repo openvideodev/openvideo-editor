@@ -53,18 +53,30 @@ export const groupWordsByWidth = (
     const metrics = ctx.measureText("AaFfLMZpPqQ");
     const singleLineHeight =
       metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent || fontSize;
-    const totalHeight = singleLineHeight * currentLineCount * 1.2; // Add some leading
+    const totalHeight = singleLineHeight * currentLineCount; // Add some leading
 
     // Calculate max width among all lines
     const lines = currentText.split("\n");
     let maxW = 0;
+    const punctuationExtra = 4;
+    let widthSpace = ctx.measureText(" ").width + punctuationExtra;
+
     lines.forEach((line) => {
-      maxW = Math.max(maxW, ctx.measureText(line).width);
+      let width = ctx.measureText(line).width;
+
+      const punctuationMatches = line.match(/[.,!?;:]/g);
+      if (punctuationMatches) {
+        width += punctuationMatches.length * punctuationExtra;
+      }
+
+      maxW = Math.max(maxW, width);
     });
+    const words = lines[0].split(" ");
+    const totalWidth = maxW + (words.length + 1) * widthSpace;
 
     captions.push({
       text: currentText,
-      width: maxW + 160,
+      width: totalWidth,
       height: totalHeight,
       words: currentWords.map((w, idx) => ({
         text: w.word || w.text || "",
